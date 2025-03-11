@@ -6,12 +6,12 @@ const router = express.Router();
 // Create a New To-Do
 router.post("/todos", async (req, res) => {
     try {
-      const { title } = req.body; // Get 'title' from the request body
+      const { title, description, reminder, recurring, category } = req.body; // Get 'title' from the request body
       if (!title) {
         return res.status(400).json({ message: "Title is required" });
       }
   
-      const newTodo = new Todo({ title }); // Create a new to-do item
+      const newTodo = new Todo({ title, description, reminder, recurring, category }); // Create a new to-do item
       await newTodo.save(); // Save it to the database
       res.status(201).json(newTodo); // Return the saved item
     } catch (error) {
@@ -35,11 +35,11 @@ router.post("/todos", async (req, res) => {
 router.put("/todos/:id", async (req, res) => {
     try {
       const { id } = req.params; // Get ID from URL
-      const { title, completed } = req.body; // Get new title or completed status
+      const { title, description, reminder, recurring, category } = req.body; // Get new title or completed status
   
       const updatedTodo = await Todo.findByIdAndUpdate(
         id,
-        { title, completed },
+        { title, description, reminder, recurring, category },
         { new: true } // Returns the updated object
       );
   
