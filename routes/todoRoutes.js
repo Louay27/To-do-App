@@ -7,6 +7,7 @@ const router = express.Router();
 router.post("/todos", async (req, res) => {
     try {
       const { title, description, reminder, recurring, category } = req.body; // Get 'title' from the request body
+      
       if (!title) {
         return res.status(400).json({ message: "Title is required" });
       }
@@ -20,16 +21,34 @@ router.post("/todos", async (req, res) => {
     }
   });
 
-// Get All To-Dos
+// Get All To-Dos (with optional category filtering)
   router.get("/todos", async (req, res) => {
     try {
-      const todos = await Todo.find(); // Retrieve all to-dos from MongoDB
-      res.status(200).json(todos); // Send them back as JSON response
+       const { category } = req.query; // Get category from query params
+       let filter = {};
+
+       if (category) {
+          filter.category = category; // Apply filter if category is provided
+       }
+
+       const todos = await Todo.find(filter); // Fetch with or without filter
+       res.status(200).json(todos); // Send them back as JSON response
     } catch (error) {
-      console.error("🔥 Error fetching To-Dos:", error);
-      res.status(500).json({ message: "Error fetching to-dos", error });
+       console.error("🔥 Error fetching To-Dos:", error);
+       res.status(500).json({ message: "Error fetching to-dos", error });
     }
   });
+
+// Get all unique categories from existing to-dos
+router.get("/categories", async (req, res) => {
+  try {
+      const categories = await Todo.distinct("category"); // Fetch unique categories
+      res.status(200).json(categories);
+  } catch (error) {
+      console.error("🔥 Error fetching categories:", error);
+      res.status(500).json({ message: "Error fetching categories", error });
+  }
+});  
 
 //Update a To-Do
 router.put("/todos/:id", async (req, res) => {

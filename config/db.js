@@ -3,7 +3,7 @@ require("dotenv").config(); // Load environment variables
 
 const connectDB = async () => {
     try {
-    console.log("MongoDB URI:", process.env.MONGO_URI); // Debugging line
+    console.log("MongoDB URI:", process.env.MONGO_URI); // For Debug Purposes
     await mongoose.connect(process.env.MONGO_URI)
     console.log("MongoDB Atlas Connected Successfully!");
   } catch (error) {
